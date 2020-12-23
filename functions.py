@@ -159,32 +159,6 @@ def cardinality_error(HLL,m):
     return cardinality,error
 
 
-#def cardinality(HLL,m):
-#    '''
-#    Function to compute the cardinality 
-#    input: hll
-#    output: cardinality
-#    '''    
-#    a_m = 0.7213/(1+1.079/(m))
-#    Z = 1/sum([2**(-bucket) for bucket in HLL])
-#    cardinality = a_m*(m**2)*Z
-#    error = (1.04/sqrt(m))
-#    
-#    return cardinality
-#
-#
-#def error(m):
-#    '''
-#    Function to compute the error of our filter 
-#    input: m
-#    output: error
-#    '''
-#    
-#    error = (1.04/sqrt(m)) * 100
-#    
-#    return error, '%'
-
-
 ########################################QUESTION TWO ####################################################################################
 
 # Takes a string in input and return a new stemmed string with no punctuation and no stopwords. 
@@ -256,6 +230,18 @@ def global_dictionary(global_list ):
    
     return(global_dict)
 
+def quantile_finder(global_dict):
+    
+    main_list=[]
+    important_dict ={}
+    
+    for key in global_dict:
+        main_list.append(global_dict[key])
+     
+    upper_bound = np.quantile(main_list, .99)
+    lower_bound = np.quantile(main_list, .66)
+
+    return(lower_bound , upper_bound )
 
 
 ############# DF calculator for all important words ######################
