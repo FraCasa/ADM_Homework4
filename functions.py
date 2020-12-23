@@ -160,8 +160,9 @@ def cardinality_error(HLL,m):
 
 
 ########################################QUESTION TWO ####################################################################################
-
-# Takes a string in input and return a new stemmed string with no punctuation and no stopwords. 
+    '''
+    Takes a string in input and return a new stemmed string with no punctuation and no stopwords. 
+    '''
 def clean_text(plot):
     
     # Removing punctuation
@@ -181,15 +182,20 @@ def clean_text(plot):
 
 
 
-# this function goes through text columns and after steeming them the result will save in new columns 
-# it gets data set as an inpout and return data set as an output with one extra columns
+    '''
+    this function goes through text columns and after steeming them the result will save in new columns named clean_text
+    it gets data set as an inout and return data set as an output with one extra columns
+    '''
 def process_data(data):
     
     data['clean_text'] = data['Text'].apply(lambda x : clean_text(x))
         
     #print("Done.")
 
+    '''
+    this function will get data as an input and retun a list of all steemed words available in whole reviews as an output 
 
+    '''
 def global_lis(data):
     
     global_list = []
@@ -203,32 +209,33 @@ def global_lis(data):
     return(global_list)
 
 
+'''
+this function get global list we created above as an input and return dictionary with keys eaqual to unique words available at global list and corresponding values in integer form that shows the frequesncu of corresponding word in set of all reviews 
+we can suppose this function sd  DF calculator for all words 
+'''
 
-# now I define global dictionary that include term_id and corresponding term frequency :
-# to do this I define a function that get data as an input and terund corresponcing dictionary with keys equal to 
-# term id and corresponcing term frequency as values 
-# def global_dictionary(global_list , dictionary):
-
-############ DF calculator for all words ########
 def global_dictionary(global_list ):
     
     global_dict = {}
-    words_counter = {}
+    words_counter = {}  # to calculate frequency of each word 
     
-    for word in global_list:
+    for word in global_list: # moving on steemed version of  all words available in reviews 
+
 
         if word not in words_counter:
-            words_counter[word] = 1
+            words_counter[word] = 1 # if it is nor existed before put frequency equal to 1 
         else:
-            words_counter[word] += 1
+            words_counter[word] += 1  # if it existed also before increase frequency by 1
 
 
     for word in global_list:
         
         if word not in global_dict:
-            global_dict[word] = words_counter[word]
+            global_dict[word] = words_counter[word]  # creat final goal dictionaty
    
     return(global_dict)
+
+
 
 def quantile_finder(global_dict):
     
@@ -236,44 +243,53 @@ def quantile_finder(global_dict):
     important_dict ={}
     
     for key in global_dict:
+        
         main_list.append(global_dict[key])
      
-    upper_bound = np.quantile(main_list, .99)
-    lower_bound = np.quantile(main_list, .66)
+    upper_bound = np.quantile(main_list, .99) # create proper upper bound 
+    lower_bound = np.quantile(main_list, .66) # create proper lower bound 
 
     return(lower_bound , upper_bound )
 
+'''
+This function gets as an input the dictionary of all stemmed vocabulary and lower bounds and upper bounds produced at previous 
+function it applied quantile method and return dictionary. The dictionary has key values equal to vocabulary that are availabel 
+cmong specified quantiles and values equal to number of times that vocabulary repeated so in this way we simply have dictionary 
+that just keep most important and influencing words.
+'''
 
-############# DF calculator for all important words ######################
+
 def main_words(global_dict , lower_bound , upper_bound):
     
     important_dict={}
     
     for key in global_dict:
         
-        if global_dict[key] < upper_bound and global_dict[key] > lower_bound:
+        if global_dict[key] < upper_bound and global_dict[key] > lower_bound: # choose ones among boundries
             if key not in important_dict:
                 important_dict[key] = global_dict[key]
             
     return(important_dict)
 
-
-# now we add one extra columns to our data that include just stem importsnt words 
-# def important_text_process(text,important_dict,dictionary_word):
+'''
+this function get one text and important_dictionary as an input and just keep words of text that are available 
+in our dictionary and return list of those important words in text
+'''
 def important_text_process(text,important_dict):
     
     important_list = []
     
     for token in str(text).split():
         
-#         term_id = dictionary_word[token]
         if token in important_dict:
             important_list.append(token)
         
                 
     return(important_list)
-
-
+'''
+This function get dataset as an input and apply important_text_process to 'clean_text' columns of data and add extra columns
+to the data that just keep importsnt words of steemed version of text 
+'''
 def important_column_data(data):
     
     data['Important_Words']=data['clean_text'].apply(lambda x : important_text_process(x ,important_dict))
@@ -281,13 +297,19 @@ def important_column_data(data):
     #print("Done.")
     
 
-    
+'''
+this function id term frequency calculator and has the same structure same as one we had in previous assignments for specific unique product ID in merge list of all important words in last columns of our data and calculate term frequency of word and normalize it byt deviding to the length of final merged list 
+
+'''
 def tf_calculator(slice1,unique_products,num_product) :
     
     
     index=(np.where(slice1['ProductId'] == unique_products[int(num_product)]))[0].tolist()
     fara = {}
     merged_list_length = 0
+    
+    # merge last columns of data wich named Important_words and keep last version of processed and reduced reviews
+    
 
     for i in range(len(index)):
 
@@ -295,21 +317,23 @@ def tf_calculator(slice1,unique_products,num_product) :
 
         for token in merged_text:
             
-            if token not in fara:
+            if token not in fara: # counting term frequency of each word
                 
                 fara[token] = 1
             else:
                 fara[token] += 1
 
-        merged_list_length = merged_list_length + len(merged_text)
+        merged_list_length = merged_list_length + len(merged_text)  # calculate final length to use for normalizing 
 
     for key in fara:
         
-            fara[key]=(fara[key]/(merged_list_length+1))
+            fara[key]=(fara[key]/(merged_list_length+1))  # normalization 
                 
     return(fara)
 
-
+'''
+this function calculate the inverse data frequency among steemed reduced version of all reviews and and the structure of function is exaclly like what we had in previous assignments it merged all the reviws for each product id and counting IDF 
+'''
 def IDF_calculator(slice1,unique_product_ID) :
     
     DF={}
@@ -377,20 +401,17 @@ def extracting_relevant(important_dictionary,relevant_words,num_product,unique_p
             if token in relevant_words :
                  relevant_list_product.append(token)
 
-
-#         merged_list_length = merged_list_length + len(merged_text)
-
-#     for key in fara:
-        
-#             fara[key]=(fara[key]/(merged_list_length+1))
     return( relevant_list_product) 
 
 
+'''
+This function calculate clusters of given centroids and how it works is that at first step it calculate the distance of each available vectors with all centroids and then by chooosing the minimum distance recognize the centroid and cluster in which this vector belongs 
 
+'''
 def distance_calculator(vectors , centroids):
     
     clusters = {}
-    for i in range(len(vectors)) :
+    for i in range(len(vectors)) : 
         distance = {}
         for center in centroids:
             
@@ -411,7 +432,10 @@ def distance_calculator(vectors , centroids):
             
             
     return(clusters)
-                  
+'''
+This function get centroids and clusters as an input and after calculating the mean of all clusters retuen these values as an 
+new and updated centroids 
+'''
 
 def reevaluate_centers(mu, clusters):
     newmu = []
@@ -420,6 +444,9 @@ def reevaluate_centers(mu, clusters):
         newmu.append(np.mean(clusters[k],axis=0))
     return newmu
 
+'''
+This function calculate the variance between the vector of centroids 
+'''
 def variance_among_centroids(centroids):
     comparision = []
 
@@ -427,18 +454,24 @@ def variance_among_centroids(centroids):
     
     return (comparision)
 
-
+'''
+calculating the variance between all vectors available in each cluster 
+'''
 def inner_variance(mu, clusters):
     inner_var = []
     keys = sorted(clusters.keys())
     for k in keys:
         inner_var.append(np.var(clusters[k]))
     return inner_var
-
+'''
+as long as centroids are not remain the same the convergence does not complete and so we will continue 
+'''
 def has_converged(mu, oldmu):
     return (set([tuple(a) for a in mu]) == set([tuple(a) for a in oldmu]))
 
-
+'''
+this function apply all above functions and return final centroids and clusters 
+'''
 def k_means(vectors,initial_centroids):
     
     clusters = distance_calculator(vectors , initial_centroids)
@@ -458,7 +491,9 @@ def k_means(vectors,initial_centroids):
     
     return (new_centroids,clusters)
 
-
+'''
+this function specifies the cluster number for given product id 
+'''
 
 def cluster_specification(product_id,cluster_appender ,extra_product ):
     clusterNumber = 0
@@ -478,16 +513,15 @@ def cluster_specification(product_id,cluster_appender ,extra_product ):
                              
     return(clusterNumber)
 
-
+'''
+Adding extra columns ad cluster number to mail data frame in order to do group by and other stuffd 
+'''
 def cluster_producer(data):
     
     data['cluster_number']=data['ProductId'].apply(lambda x : cluster_specification(x,cluster_appender ,extra_product ))
         
     print("Done.")
 
-    
-    
-    
     
     
     
