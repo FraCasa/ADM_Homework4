@@ -12,8 +12,8 @@
 - - - -
 
 ## Repo structure
-`< homework 2.ipynb: >`
+` homework 2.ipynb: `
 > jupyter notebook that contain the main code 
 
-`< functions.py: >`
+` functions.py: `
 
