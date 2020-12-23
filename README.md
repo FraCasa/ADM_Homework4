@@ -23,3 +23,5 @@ the Task was divided into 3 main chunks:
 ` functions.py: `
 > python files with our functions we call in the main Jupyter Notebook file
 
+### N.B:
+> in the main file, starting from the __KMeans ++ Method :__ the results you can see are related to a smaller dataset(just 20000k rows). Since we didn't have enought time we couldn't run the whole dataset but the results for the slice of data are available as an evidence that this functions works properly and _merry christmas :)_ 
