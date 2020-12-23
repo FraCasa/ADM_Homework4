@@ -1,12 +1,16 @@
-# ADM_Homework4 - Hard coding\
+# ADM_Homework4 - Hard coding
+[Homework 4](https://github.com/CriMenghini/ADM/tree/master/2020/Homework_4)
 
 ## Group's Members:
-*Faranak Alikhah
-*Francesca Casarano
-*Dario Baraghini \
+* Faranak Alikhah
+* Francesca Casarano
+* Dario Baraghini 
+- - - - 
+## Task
 
 
-[Homework 4](https://github.com/CriMenghini/ADM/tree/master/2020/Homework_4) finished by Group 20: Faranak Alikhah, Dario Baraghini and Francesca Casarano. <b>
+- - - -
 
-## In this repository:
-1. ...
+## Repo structure
+
+
