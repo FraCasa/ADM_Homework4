@@ -17,7 +17,7 @@ the Task was divided into 3 main chunks:
 - - - -
 
 ## Repo structure
-` homework 2.ipynb: `
+` Homework4.ipynb: `
 > Jupyter Notebook that contain the main code and the results of our implementations
 
 ` functions.py: `
